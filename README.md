@@ -1,7 +1,7 @@
 Hangouts-NLP
 ============
 
-This program performs a number of natural language processing analyses on Google Hangouts instant messaging data.
+This program performs a number of different natural language processing analyses on Google Hangouts instant messaging data.
 
 <b>Requirements:</b>
 
