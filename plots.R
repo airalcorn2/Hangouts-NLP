@@ -1,5 +1,8 @@
 # Michael A. Alcorn (airalcorn2@gmail.com)
 
+options(repos = structure(c(CRAN = "http://cran.revolutionanalytics.com/")))
+install.packages(c("ggplot2", "reshape", "tm", "wordcloud"))
+
 library(ggplot2)
 library(reshape)
 library(tm)
