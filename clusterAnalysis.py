@@ -25,6 +25,11 @@ def tokenize(text):
     stems = stem_tokens(tokens, stemmer)
     return stems
 
+def runClusterAnalysis():
+    clusterMessages()
+    clusterConversations()
+    clusterContiguousMessages()
+
 
 def clusterMessages(k = 50):
     conversations = open("Conversations.txt")

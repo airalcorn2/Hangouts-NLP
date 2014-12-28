@@ -9,23 +9,24 @@ def createCorpora():
     
     line = conversations.readline().strip()
     allOutput = open("allMessages", "w")
-    michaelOutput = open("michaelMessages", "w")
-    katherineOutput = open("katherineMessages", "w")
+    senderOutput = {}
+    
     totalMessages = 0
     
     while line != "":
-        [timestamp, sender, message] = line.split("[SEP]")
-        if "Michael" in sender:
-            print(message, file = michaelOutput)
-        else:
-            print(message, file = katherineOutput)
+        contents = line.split("[SEP]")
+        sender = contents[1].replace(",", "")
+        message = " ".join(contents[2:])
+        if sender not in senderOutput:
+            senderOutput[sender] = open(sender + "Messages", "w")
+        print(message, file = senderOutput[sender])
         print(message, file = allOutput)
         line = conversations.readline().strip()
         totalMessages += 1
     
     allOutput.close()
-    michaelOutput.close()
-    katherineOutput.close()
+    for sender in senderOutput.keys():
+        senderOutput[sender].close()
     
     conversations = open("Conversations.txt")
     
@@ -36,9 +37,11 @@ def createCorpora():
         allMessages.append(line)
         line = conversations.readline().strip()
     
-    groupSize = (len(allMessages) / 5) + 1
+    numberOfPhases = 5
+    
+    groupSize = (len(allMessages) / numberOfPhases) + 1
     phases = []
-    for i in range(0, 5):
+    for i in range(0, numberOfPhases):
         start = i * groupSize
         end = start + groupSize
         phases.append(allMessages[start:end])
@@ -46,22 +49,22 @@ def createCorpora():
     phaseCount = 1
     for phase in phases:
         allOutput = open("allMessagesPhase{0}".format(phaseCount), "w")
-        michaelOutput = open("michaelMessagesPhase{0}".format(phaseCount), "w")
-        katherineOutput = open("katherineMessagesPhase{0}".format(phaseCount), "w")
+        senderOutput = {}
         for line in phase:
-            [timestamp, sender, message] = line.split("[SEP]")
-            if "Michael" in sender:
-                print(message, file = michaelOutput)
-            else:
-                print(message, file = katherineOutput)
+            contents = line.split("[SEP]")
+            sender = contents[1].replace(",", "")
+            message = " ".join(contents[2:])
+            if sender not in senderOutput:
+                senderOutput[sender] = open(sender + "MessagesPhase{0}".format(phaseCount), "w")
+            print(message, file = senderOutput[sender])
             print(message, file = allOutput)
-            line = conversations.readline().strip()
         allOutput.close()
-        michaelOutput.close()
-        katherineOutput.close()
+        for sender in senderOutput.keys():
+            senderOutput[sender].close()
         phaseCount += 1
 
 if __name__ == "__main__":
     senderAnalysis.runSenderAnalysis()
     sentimentAnalysis.runSentimentAnalysis()
     clusterAnalysis.runClusterAnalysis()
+    createCorpora()
