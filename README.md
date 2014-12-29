@@ -5,6 +5,7 @@ This program performs a number of different natural language processing analyses
 
 <b>Requirements:</b>
 
+<p>12GB RAM</p>
 <p>Linux</p>
 <p>Bash (I get a UnicodeDecodeError when using Zsh for some reason)</p>
 <p>Python (https://www.python.org/downloads/)</p>
