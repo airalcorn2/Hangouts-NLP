@@ -23,7 +23,7 @@ Extract the compressed file and place it in the directory containing the code.
 
 Run:
 
-<code>python hangouts-log-reader/hangouts.py '/path/to/Hangouts.json'</code>
+<code>python hangouts-log-reader/hangouts.py Hangouts.json</code>
 
 <b>Step 4.</b>
 
@@ -33,7 +33,7 @@ Find the conversation id of the conversation you want to analyze.
 
 Run:
 
-<code>python hangouts-log-reader/hangouts.py '/path/to/Hangouts.json' -c &lt;conversation id&gt; > Conversations.txt</code>
+<code>python hangouts-log-reader/hangouts.py Hangouts.json -c &lt;conversation id&gt; > Conversations.txt</code>
 
 <b>Step 6.</b>
 
