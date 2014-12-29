@@ -1,5 +1,3 @@
-# Michael A. Alcorn (airalcorn2@gmail.com)
-
 from __future__ import print_function
 
 import csv
@@ -167,6 +165,7 @@ def conversationSentimentAnalysis(classifier):
     conversation = 0
     conversationGap = 60 * 60
     pattern = "%Y-%m-%d %H:%M:%S"
+    line = conversations.readline().strip()
     contents = line.split("[SEP]")
     timestamp = contents[0]
     firstTime = int(time.mktime(time.strptime(timestamp, pattern)))

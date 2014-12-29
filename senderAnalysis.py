@@ -1,5 +1,3 @@
-# Michael A. Alcorn (airalcorn2@gmail.com)
-
 from __future__ import print_function
 
 import collections

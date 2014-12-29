@@ -1,4 +1,3 @@
-# Michael A. Alcorn (airalcorn2@gmail.com)
 # See http://www.cs.duke.edu/courses/spring14/compsci290/assignments/lab02.html.
 
 from __future__ import print_function
