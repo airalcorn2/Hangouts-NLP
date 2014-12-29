@@ -165,10 +165,6 @@ def conversationSentimentAnalysis(classifier):
     conversation = 0
     conversationGap = 60 * 60
     pattern = "%Y-%m-%d %H:%M:%S"
-    line = conversations.readline().strip()
-    contents = line.split("[SEP]")
-    timestamp = contents[0]
-    firstTime = int(time.mktime(time.strptime(timestamp, pattern)))
     senders = {}
     
     for line in conversations:
