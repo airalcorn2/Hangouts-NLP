@@ -17,7 +17,7 @@ Download your Google Hangouts data from https://www.google.com/settings/takeout.
 
 <b>Step 2.</b>
 
-Extract the compressed file.
+Extract the compressed file and place it in the directory containing the code.
 
 <b>Step 3.</b>
 
@@ -37,11 +37,15 @@ Run:
 
 <b>Step 6.</b>
 
+Download the sentiment training file found here -> https://drive.google.com/file/d/0B4iRo-F4K4f8VXFhd2pLWUJTdTg/view?usp=sharing and place it in the directory containing the code. See http://help.sentiment140.com/for-students/ for details.
+
+<b>Step 7.</b>
+
 Run:
 
 <code>python runAnalysis.py</code>
 
-<b>Step 7.</b>
+<b>Step 8.</b>
 
 Run:
 
