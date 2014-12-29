@@ -165,11 +165,14 @@ def conversationSentimentAnalysis(classifier):
     conversation = 0
     conversationGap = 60 * 60
     pattern = "%Y-%m-%d %H:%M:%S"
+    firstTime = None
     senders = {}
     
     for line in conversations:
         contents = line.strip().split("[SEP]")
         timestamp = contents[0]
+        if not firstTime:
+            firstTime = int(time.mktime(time.strptime(timestamp, pattern)))
         sender = contents[1].replace(",", "")
         if sender not in senders:
             senders[sender] = True
