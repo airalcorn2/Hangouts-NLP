@@ -34,7 +34,7 @@ Find the conversation id of the conversation you want to analyze.
 
 Run:
 
-<code>python hangouts-log-reader/hangouts.py Hangouts.json -c &lt;conversation id&gt; > Conversations.txt</code>
+<code>python hangouts-log-reader/hangouts.py Hangouts.json -c &lt;conversation id&gt; > RawConversations.txt</code>
 
 <b>Step 6.</b>
 

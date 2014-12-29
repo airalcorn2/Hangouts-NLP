@@ -8,7 +8,7 @@ import sentimentAnalysis
 def removeBlankLines():
     conversations = open("RawConversations.txt")
     output = open("Conversations.txt", "w")
-    currentLine = conversations.readline()
+    currentLine = conversations.readline().strip()
     
     for line in conversations:
         contents = line.strip().split("[SEP]")
