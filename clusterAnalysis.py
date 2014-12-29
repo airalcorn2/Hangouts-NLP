@@ -37,19 +37,17 @@ def clusterMessages(k = 50):
     
     token_dict = {}
     
-    line = conversations.readline().strip()
     messagesDict = {}
     i = 0
     
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         message = " ".join(contents[2:])
         lowers = message.lower()
         no_punctuation = lowers.translate(None, string.punctuation)
         token_dict[i] = no_punctuation
         messagesDict[i] = line
         i += 1
-        line = conversations.readline().strip()
     
     # This can take some time.
     tfidf = TfidfVectorizer(tokenizer = tokenize, stop_words = 'english')
@@ -99,15 +97,14 @@ def clusterConversations(k = 20):
     print("Clustering converations...")
     conversations = open("Conversations.txt")
     
-    line = conversations.readline().strip()
     oldMessageTime = None
     conversationsDict = {0: []}
     conversation = 0
     conversationGap = 60 * 60
     pattern = "%Y-%m-%d %H:%M:%S"
     
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         timestamp = contents[0]
         curMessageTime = int(time.mktime(time.strptime(timestamp, pattern)))
         if not oldMessageTime:
@@ -118,7 +115,6 @@ def clusterConversations(k = 20):
             conversationsDict[conversation] = []
         conversationsDict[conversation].append(line)
         oldMessageTime = curMessageTime
-        line = conversations.readline().strip()
     
     token_dict = {}
     
@@ -189,7 +185,6 @@ def clusterContiguousMessages(k = 20):
     token_dict = {}
     messages = {}
     
-    line = conversations.readline().strip()
     i = 0
     currentSender = None
     currentMessage = ""
@@ -198,8 +193,8 @@ def clusterContiguousMessages(k = 20):
     gapTime = 60 * 3
     prevTime = None
     
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         message = " ".join(contents[2:])
         timestamp = contents[0]
         sender = contents[1]
@@ -212,7 +207,6 @@ def clusterContiguousMessages(k = 20):
         if sender == currentSender and currentTime - prevTime <= gapTime:
             currentMessage += no_punctuation + " "
             actualMessage += [message]
-            line = conversations.readline().strip()
             prevTime = currentTime
             continue
         else:
@@ -223,7 +217,6 @@ def clusterContiguousMessages(k = 20):
             currentMessage = no_punctuation + " "
             actualMessage = [message]
             prevTime = currentTime
-            line = conversations.readline().strip()
     
     token_dict[i] = currentMessage[:-1]
     messages[i] = actualMessage

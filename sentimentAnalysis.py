@@ -68,12 +68,11 @@ def messageSentimentAnalysis(classifier):
     writer = csv.DictWriter(open("Files/messageSentiments.csv", "w"), fieldNames)
     writer.writeheader()
     
-    line = conversations.readline().strip()
     sentimentScores = []
     
     # Individual messages.
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         tokens = nltk.word_tokenize(message)
@@ -83,7 +82,6 @@ def messageSentimentAnalysis(classifier):
         row = {"sentiment": pos, "sender": sender}
         writer.writerow(row)
         sentimentScores.append((pos, message))
-        line = conversations.readline().strip()
     
     sentimentScores.sort(key = lambda message: message[0], reverse = True)
     
@@ -102,7 +100,6 @@ def contiguousMessagesSentimentAnalysis(classifier):
     writer = csv.DictWriter(open("Files/contiguousMessageSentiments.csv", "w"), fieldNames)
     writer.writeheader()
     
-    line = conversations.readline().strip()
     sentimentScores = []
     currentSender = None
     currentMessage = ""
@@ -112,8 +109,8 @@ def contiguousMessagesSentimentAnalysis(classifier):
     prevTime = None
     
     # Contiguous messages.
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         timestamp = contents[0]
@@ -125,7 +122,6 @@ def contiguousMessagesSentimentAnalysis(classifier):
         if sender == currentSender and currentTime - prevTime <= gapTime:
             currentTokens += tokens
             currentMessage += message + " "
-            line = conversations.readline().strip()
             prevTime = currentTime
             continue
         else:
@@ -139,7 +135,6 @@ def contiguousMessagesSentimentAnalysis(classifier):
             prevTime = currentTime
             currentMessage = message + " "
             currentTokens = tokens
-            line = conversations.readline().strip()
     
     # Last batch.
     feats = word_feats(currentTokens)
@@ -167,7 +162,6 @@ def conversationSentimentAnalysis(classifier):
     
     conversations = open("Conversations.txt")
     
-    line = conversations.readline().strip()
     oldMessageTime = None
     conversationsDict = {0: []}
     conversation = 0
@@ -178,8 +172,8 @@ def conversationSentimentAnalysis(classifier):
     firstTime = int(time.mktime(time.strptime(timestamp, pattern)))
     senders = {}
     
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         timestamp = contents[0]
         sender = contents[1].replace(",", "")
         if sender not in senders:
@@ -193,7 +187,6 @@ def conversationSentimentAnalysis(classifier):
             conversationsDict[conversation] = []
         conversationsDict[conversation].append(line)
         oldMessageTime = curMessageTime
-        line = conversations.readline().strip()
     
     sentimentScores = []
     
@@ -262,13 +255,11 @@ def weeklySentimentAnalysis(classifier):
     
     senders = {}
     
-    line = conversations.readline().strip()
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         sender = contents[1].replace(",", "")
         if sender not in senders:
             senders[sender] = True
-        line = conversations.readline().strip()
     
     # Average weekly sentiment.
     fieldNames = ["time", "overall"] + senders.keys()
@@ -276,8 +267,6 @@ def weeklySentimentAnalysis(classifier):
     writer.writeheader()
     
     conversations = open("Conversations.txt")
-    
-    line = conversations.readline().strip()
     
     pattern = "%Y-%m-%d %H:%M:%S"
     weekTime = 60 * 60 * 24 * 7
@@ -288,8 +277,8 @@ def weeklySentimentAnalysis(classifier):
     
     startTime = None
     
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         timestamp = contents[0]
@@ -324,8 +313,6 @@ def weeklySentimentAnalysis(classifier):
         else:
             allScores.append(pos)
             senderScores[sender].append(pos)
-        
-        line = conversations.readline().strip()
     
     # Last batch.
     row = {"time": startTime, "overall": sum(allScores) / len(allScores)}

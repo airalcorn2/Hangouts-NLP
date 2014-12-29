@@ -30,10 +30,8 @@ def runSenderAnalysis(getSenderProbs = False):
     # For sender classifier.
     senderFeatures = {}
     
-    line = conversations.readline().strip()
-    
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         sender = contents[1].replace(",", "")
         
         timestamp = contents[0]
@@ -62,8 +60,6 @@ def runSenderAnalysis(getSenderProbs = False):
         
         feats = word_feats(tokens)
         senderFeatures[sender].append((feats, sender))
-        
-        line = conversations.readline().strip()
     
     # Vocabulary sizes.
     for sender in vocabularies.keys():
@@ -128,13 +124,11 @@ def goGetSenderProbs(classifier, senders):
     
     conversations = open("Conversations.txt")
     
-    line = conversations.readline().strip()
-    
     output = open("Files/messageProbs.txt", "w")
     
-    while line != "":
+    for line in conversations:
         
-        contents = line.split("[SEP]")
+        contents = line.strip().split("[SEP]")
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         tokens = nltk.word_tokenize(message)
@@ -147,8 +141,6 @@ def goGetSenderProbs(classifier, senders):
         
         results = results[:-2]
         print(results, file = output)
-        
-        line = conversations.readline().strip()
 
 
 def goCheckSenderConvergence(classifier, numberOfPhases = 5):
@@ -156,20 +148,18 @@ def goCheckSenderConvergence(classifier, numberOfPhases = 5):
     print("Checking for sender convergence...")
     
     conversations = open("Conversations.txt")
-    
-    line = conversations.readline().strip()
+
     allFeatures = []
     timestamps = []
     
-    while line != "":
-        contents = line.split("[SEP]")
+    for line in conversations:
+        contents = line.strip().split("[SEP]")
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         timestamp = contents[0]
         tokens = nltk.word_tokenize(message)
         feats = word_feats(tokens)
         allFeatures.append((feats, sender))
-        line = conversations.readline().strip()
         timestamps.append(timestamp)
     
     groupSize = (len(allFeatures) / numberOfPhases) + 1
