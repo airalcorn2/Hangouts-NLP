@@ -30,6 +30,8 @@ def createCorpora():
         senderOutput[sender].close()
 
 if __name__ == "__main__":
+    if not os.path.exists("Files"):
+        os.makedirs("Files")
     senderAnalysis.runSenderAnalysis()
     sentimentAnalysis.runSentimentAnalysis()
     clusterAnalysis.runClusterAnalysis()

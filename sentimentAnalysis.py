@@ -14,7 +14,7 @@ def word_feats(words):
 
 def runSentimentAnalysis(checkContiguousMessages = True, checkConversations = True, checkWeeks = True):
     
-    print("Performing sentiment analysis of messages...")
+    print("Performing sentiment analysis...")
     
     f = open("sentimentTraining")
     tweets = [line.strip() for line in f]
@@ -65,7 +65,7 @@ def messageSentimentAnalysis(classifier):
     conversations = open("Conversations.txt")
     
     fieldNames = ["sentiment", "sender"]
-    writer = csv.DictWriter(open("messageSentiments.csv", "w"), fieldNames)
+    writer = csv.DictWriter(open("Files/messageSentiments.csv", "w"), fieldNames)
     writer.writeheader()
     
     line = conversations.readline().strip()
@@ -87,7 +87,7 @@ def messageSentimentAnalysis(classifier):
     
     sentimentScores.sort(key = lambda message: message[0], reverse = True)
     
-    output = open("messageSentimentScores", "w")
+    output = open("Files/messageSentimentScores", "w")
     for message in sentimentScores:
         print("{0}: {1}".format(message[0], message[1]), file = output)
     
@@ -99,7 +99,7 @@ def contiguousMessagesSentimentAnalysis(classifier):
     conversations = open("Conversations.txt")
     
     fieldNames = ["sentiment", "sender"]
-    writer = csv.DictWriter(open("contiguousMessageSentiments.csv", "w"), fieldNames)
+    writer = csv.DictWriter(open("Files/contiguousMessageSentiments.csv", "w"), fieldNames)
     writer.writeheader()
     
     line = conversations.readline().strip()
@@ -152,7 +152,7 @@ def contiguousMessagesSentimentAnalysis(classifier):
     
     sentimentScores.sort(key = lambda message: message[0], reverse = True)
     
-    output = open("contiguousMessageSentimentScores", "w")
+    output = open("Files/contiguousMessageSentimentScores", "w")
     for message in sentimentScores:
         print("{0}: {1}".format(message[0], message[1]), file = output)
     
@@ -199,7 +199,7 @@ def conversationSentimentAnalysis(classifier):
     
     fieldNames = ["time", "overall"] + senders.keys()
     
-    writer = csv.DictWriter(open("conversationSentiments.csv", "w"), fieldNames)
+    writer = csv.DictWriter(open("Files/conversationSentiments.csv", "w"), fieldNames)
     writer.writeheader()
     
     for i in range(0, len(conversationsDict.keys())):
@@ -245,7 +245,7 @@ def conversationSentimentAnalysis(classifier):
     
     sentimentScores.sort(key = lambda conversation: conversation[0], reverse = True)
     
-    output = open("conversationSentimentScores", "w")
+    output = open("Files/conversationSentimentScores", "w")
     for conversation in sentimentScores:
         separator = ["#" for i in range(0, 50)]
         separator[25] = str(conversation[1]) + "/" + str(conversation[0])
@@ -272,7 +272,7 @@ def weeklySentimentAnalysis(classifier):
     
     # Average weekly sentiment.
     fieldNames = ["time", "overall"] + senders.keys()
-    writer = csv.DictWriter(open("weeklySentiment.csv", "w"), fieldNames)
+    writer = csv.DictWriter(open("Files/weeklySentiment.csv", "w"), fieldNames)
     writer.writeheader()
     
     conversations = open("Conversations.txt")

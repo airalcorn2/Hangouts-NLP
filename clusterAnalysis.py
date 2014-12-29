@@ -32,6 +32,7 @@ def runClusterAnalysis():
 
 
 def clusterMessages(k = 50):
+    print("Clustering messages...")
     conversations = open("Conversations.txt")
     
     token_dict = {}
@@ -81,7 +82,7 @@ def clusterMessages(k = 50):
     for i in range(0, len(clusterCounts.keys())):
         print("{0}: {1}".format(i, clusterCounts[i]))
     
-    output = open("messageClusters_" + str(k), "w")
+    output = open("Files/messageClusters_" + str(k), "w")
     
     for label in range(0, len(clusters.keys())):
         separator = ["#" for i in range(0, 50)]
@@ -95,6 +96,7 @@ def clusterMessages(k = 50):
 
 def clusterConversations(k = 20):
     
+    print("Clustering converations...")
     conversations = open("Conversations.txt")
     
     line = conversations.readline().strip()
@@ -166,7 +168,7 @@ def clusterConversations(k = 20):
     for i in range(0, len(clusterCounts.keys())):
         print("{0}: {1}".format(i, clusterCounts[i]))
     
-    output = open("conversationClusters_" + str(k), "w")
+    output = open("Files/conversationClusters_" + str(k), "w")
     
     for label in range(0, len(clusters.keys())):
         separator = ["#" for i in range(0, 50)]
@@ -181,6 +183,7 @@ def clusterConversations(k = 20):
     output.close()
 
 def clusterContiguousMessages(k = 20):
+    print("Clustering contiguous messages...")
     conversations = open("Conversations.txt")
     
     token_dict = {}
@@ -257,7 +260,7 @@ def clusterContiguousMessages(k = 20):
     for i in range(0, len(clusterCounts.keys())):
         print("{0}: {1}".format(i, clusterCounts[i]))
     
-    output = open("contiguousMessageClusters_" + str(k), "w")
+    output = open("Files/contiguousMessageClusters_" + str(k), "w")
     
     for label in range(0, len(clusters.keys())):
         separator = ["#" for i in range(0, 50)]

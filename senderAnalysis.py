@@ -19,10 +19,10 @@ def word_feats(words):
 def runSenderAnalysis(getSenderProbs = False):
     conversations = open("Conversations.txt")
     
-    lengthsWriter = csv.DictWriter(open("messageLengths.csv", "w"), ["length", "sender"])
+    lengthsWriter = csv.DictWriter(open("Files/messageLengths.csv", "w"), ["length", "sender"])
     lengthsWriter.writeheader()
     
-    hoursWriter = csv.DictWriter(open("messageHours.csv", "w"), ["hour", "sender"])
+    hoursWriter = csv.DictWriter(open("Files/messageHours.csv", "w"), ["hour", "sender"])
     hoursWriter.writeheader()
     
     vocabularies = {}
@@ -130,7 +130,7 @@ def goGetSenderProbs(classifier, senders):
     
     line = conversations.readline().strip()
     
-    output = open("messageProbs.txt", "w")
+    output = open("Files/messageProbs.txt", "w")
     
     while line != "":
         
