@@ -102,7 +102,10 @@ def clusterConversations(k = 20):
     conversationGap = 60 * 60
     pattern = "%Y-%m-%d %H:%M:%S"
     
-    for line in conversations:
+    line = None
+    
+    for text in conversations:
+        line = text
         contents = line.strip().split("[SEP]")
         timestamp = contents[0]
         curMessageTime = int(time.mktime(time.strptime(timestamp, pattern)))
@@ -115,6 +118,7 @@ def clusterConversations(k = 20):
         conversationsDict[conversation].append(line)
         oldMessageTime = curMessageTime
     
+    conversationsDict[conversation].append(line)
     token_dict = {}
     
     for i in range(0, len(conversationsDict.keys())):
@@ -265,6 +269,7 @@ def clusterContiguousMessages(k = 20):
                 print(message, file = output)
     
     output.close()
+
 
 if __name__ == "__main__":
     clusterMessages()
