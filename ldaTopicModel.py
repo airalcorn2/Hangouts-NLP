@@ -10,7 +10,7 @@ import time
 from nltk.corpus import stopwords
 
 
-def ldaCluster(k = 25):
+def ldaModel(k = 25):
     conversations = open("Conversations.txt")
     
     oldMessageTime = None
@@ -98,4 +98,4 @@ def ldaCluster(k = 25):
 
 
 if __name__ == "__main__":
-    topic_scores = ldaCluster()
+    topic_scores = ldaModel()
