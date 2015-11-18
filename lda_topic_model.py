@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # See http://radimrehurek.com/gensim/tut1.html#from-strings-to-vectors
 # and https://pypi.python.org/pypi/lda.
 
@@ -10,14 +12,14 @@ import time
 from nltk.corpus import stopwords
 
 
-def ldaModel(k = 25):
+def lda_model(k = 25):
     conversations = open("Conversations.txt")
     
-    oldMessageTime = None
+    old_message_time = None
     documents = []
-    conversationGap = 60 * 60
+    conversation_gap = 60 * 60
     pattern = "%Y-%m-%d %H:%M:%S"
-    cachedStopWords = stopwords.words("english")
+    cached_stop_words = stopwords.words("english")
     text = []
     
     for line in conversations:
@@ -27,16 +29,16 @@ def ldaModel(k = 25):
         lowers = message.lower()
         no_punctuation = lowers.translate(None, string.punctuation)
         no_digits = ''.join([word for word in no_punctuation if not word.isdigit()])
-        no_stops = [word for word in no_digits.split() if word not in cachedStopWords]
-        curMessageTime = int(time.mktime(time.strptime(timestamp, pattern)))
-        if not oldMessageTime:
-            oldMessageTime = curMessageTime
-        diff = curMessageTime - oldMessageTime
-        if diff > conversationGap:
+        no_stops = [word for word in no_digits.split() if word not in cached_stop_words]
+        cur_message_time = int(time.mktime(time.strptime(timestamp, pattern)))
+        if not old_message_time:
+            old_message_time = cur_message_time
+        diff = cur_message_time - old_message_time
+        if diff > conversation_gap:
             documents.append(text)
             text = []
         text += no_stops
-        oldMessageTime = curMessageTime
+        old_message_time = cur_message_time
     
     documents.append(text)
     
@@ -44,20 +46,17 @@ def ldaModel(k = 25):
     
     for document in documents:
         for token in document:
-            if token not in token_count:
-                token_count[token] = 1
-            else:
-                token_count[token] += 1
+            token_count[token] = token_count.get(token, 0) + 1
     
-    allTokenCounts = token_count.items()
-    allTokenCounts.sort(key = lambda tokenCount: tokenCount[1], reverse = True)
-    numTokens = len(allTokenCounts)
-    topOnePer = 0.01 * numTokens
-    topOneCount = allTokenCounts[int(topOnePer)][1]
+    all_token_counts = token_count.items()
+    all_token_counts.sort(key = lambda token_count: token_count[1], reverse = True)
+    num_tokens = len(all_token_counts)
+    top_one_per = 0.01 * num_tokens
+    top_one_count = all_token_counts[int(top_one_per)][1]
     # Remove words that appear only once or are extremely frequent.
     for i, document in enumerate(documents):
         documents[i] = [word for word in document
-                        if 1 < token_count[word] < topOneCount]
+                        if 1 < token_count[word] < top_one_count]
     
     index = 0
     token_index = {}
@@ -70,7 +69,7 @@ def ldaModel(k = 25):
                 vocab.append(token)
                 index += 1
     
-    X = np.zeros((len(documents), len(token_index.keys())))
+    X = np.zeros((len(documents), len(token_index)))
     
     for i, document in enumerate(documents):
         for token in document:
@@ -81,9 +80,9 @@ def ldaModel(k = 25):
     model.fit(X)  # model.fit_transform(X) is also available
     topic_word = model.topic_word_  # model.components_ also works
     n_top_words = 15
-    for i, topic_dist in enumerate(topic_word):
+    for (i, topic_dist) in enumerate(topic_word):
         topic_words = np.array(vocab)[np.argsort(topic_dist)][:-n_top_words:-1]
-        print('Topic {}: {}'.format(i, ' '.join(topic_words)))
+        print("Topic {}: {}".format(i, " ".join(topic_words)))
     
     doc_topic = model.doc_topic_
     topic_scores = []
@@ -98,4 +97,4 @@ def ldaModel(k = 25):
 
 
 if __name__ == "__main__":
-    topic_scores = ldaModel()
+    topic_scores = lda_model()

@@ -44,7 +44,7 @@ Download the sentiment training file found here -> https://drive.google.com/file
 
 Run:
 
-<code>python runAnalysis.py</code>
+<code>python run_analysis.py</code>
 
 <b>Step 8.</b>
 
