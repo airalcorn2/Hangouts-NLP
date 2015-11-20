@@ -18,8 +18,8 @@ def run_sentiment_analysis(check_contiguous_messages = True, check_conversations
     
     print("Performing sentiment analysis...")
     
-    f = open("sentimentTraining")
-    tweets = [line.strip() for line in f]
+    f = open("sentiment_training.txt")
+    tweets = [line.strip().decode("utf-8", "ignore") for line in f]
     total_tweets = len(tweets)
     
     features = []
@@ -33,7 +33,6 @@ def run_sentiment_analysis(check_contiguous_messages = True, check_conversations
             sys.stdout.write("\rTraining {0}% complete...".format(percent))
             sys.stdout.flush()
         [sentiment, sentence] = tweet.split("[SEP]")
-        # sentence = unicode(sentence, 'utf-8')
         pos_or_neg = None
         if sentiment == "0":
             pos_or_neg = "neg"
@@ -75,7 +74,11 @@ def message_sentiment_analysis(classifier):
     
     # Individual messages.
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         tokens = nltk.word_tokenize(message)
@@ -88,9 +91,9 @@ def message_sentiment_analysis(classifier):
     
     sentiment_scores.sort(key = lambda message: message[0], reverse = True)
     
-    output = open("Files/message_sentiment_scores", "w")
+    output = open("Files/message_sentiment_scores.txt", "w")
     for message in sentiment_scores:
-        print("{0}: {1}".format(message[0], message[1]), file = output)
+        print("{0}: {1}".format(message[0], message[1].encode("utf-8")), file = output)
     
     output.close()
 
@@ -114,7 +117,11 @@ def contiguous_messages_sentiment_analysis(classifier):
     
     # Contiguous messages.
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         timestamp = contents[0]
@@ -151,16 +158,16 @@ def contiguous_messages_sentiment_analysis(classifier):
     
     sentiment_scores.sort(key = lambda message: message[0], reverse = True)
     
-    output = open("Files/contiguous_message_sentiment_scores", "w")
+    output = open("Files/contiguous_message_sentiment_scores.txt", "w")
     for message in sentiment_scores:
-        print("{0}: {1}".format(message[0], message[1]), file = output)
+        print("{0}: {1}".format(message[0], message[1].encode("utf-8")), file = output)
     
     output.close()
 
 
 def print_conversation(i, conversations_dict):
     for message in conversations_dict[i]:
-        print(message)
+        print(message.encode("utf-8"))
 
 
 def conversation_sentiment_analysis(classifier):
@@ -174,16 +181,19 @@ def conversation_sentiment_analysis(classifier):
     conversation_gap = 60 * 60
     pattern = "%Y-%m-%d %H:%M:%S"
     first_time = None
-    senders = {}
+    senders = set()
     
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         timestamp = contents[0]
         if not first_time:
             first_time = int(time.mktime(time.strptime(timestamp, pattern)))
         sender = contents[1].replace(",", "")
-        if sender not in senders:
-            senders[sender] = True
+        senders.add(sender)
         cur_message_time = int(time.mktime(time.strptime(timestamp, pattern)))
         if not old_message_time:
             old_message_time = cur_message_time
@@ -196,8 +206,7 @@ def conversation_sentiment_analysis(classifier):
     
     sentiment_scores = []
     
-    fieldnames = ["time", "overall"] + senders.keys()
-    
+    fieldnames = ["time", "overall"] + list(senders)
     writer = csv.DictWriter(open("Files/conversation_sentiments.csv", "w"), fieldnames)
     writer.writeheader()
     
@@ -205,9 +214,7 @@ def conversation_sentiment_analysis(classifier):
         conversation = conversations_dict[i]
         
         all_tokens = []
-        sender_tokens = {}
-        for sender in senders.keys():
-            sender_tokens[sender] = []
+        sender_tokens = {sender: [] for sender in senders}
         
         time_diff = None
         
@@ -233,19 +240,19 @@ def conversation_sentiment_analysis(classifier):
         
         sentiment_scores.append((all_pos, i))
         row = {"time": time_diff, "overall": all_pos}
-        for sender in senders.keys():
+        for sender in senders:
             row[sender] = sender_pos[sender]
         writer.writerow(row)
     
     sentiment_scores.sort(key = lambda conversation: conversation[0], reverse = True)
     
-    output = open("Files/conversation_sentiment_scores", "w")
+    output = open("Files/conversation_sentiment_scores.txt", "w")
     for conversation in sentiment_scores:
         separator = ["#" for i in range(0, 50)]
         separator[25] = str(conversation[1]) + "/" + str(conversation[0])
         print("".join(separator), file = output)
         for message in conversations_dict[conversation[1]]:
-            print(message, file = output)
+            print(message.encode("utf-8"), file = output)
     
     output.close()
 
@@ -255,16 +262,19 @@ def weekly_sentiment_analysis(classifier):
     
     conversations = open("Conversations.txt")
     
-    senders = {}
+    senders = set()
     
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         sender = contents[1].replace(",", "")
-        if sender not in senders:
-            senders[sender] = True
+        senders.add(sender)
     
     # Average weekly sentiment.
-    fieldnames = ["time", "overall"] + senders.keys()
+    fieldnames = ["time", "overall"] + list(senders)
     writer = csv.DictWriter(open("Files/weekly_sentiment.csv", "w"), fieldnames)
     writer.writeheader()
     
@@ -278,7 +288,11 @@ def weekly_sentiment_analysis(classifier):
     start_time = None
     
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         timestamp = contents[0]
@@ -296,12 +310,12 @@ def weekly_sentiment_analysis(classifier):
         if current_time - start_time > week_time:
             try:
                 row = {"time": start_time, "overall": sum(all_scores) / len(all_scores)}
-                for each_sender in senders.keys():
+                for each_sender in senders:
                     row[each_sender] = sum(sender_scores[each_sender]) / len(sender_scores[each_sender])
                 writer.writerow(row)
                 start_time = current_time
                 all_scores = [pos]
-                for each_sender in senders.keys():
+                for each_sender in senders:
                     if each_sender == sender:
                         sender_scores[each_sender] = [pos]
                     else:
@@ -316,11 +330,15 @@ def weekly_sentiment_analysis(classifier):
     
     # Last batch.
     row = {"time": start_time, "overall": sum(all_scores) / len(all_scores)}
-    for each_sender in senders.keys():
+    for each_sender in senders:
         row[each_sender] = sum(sender_scores[each_sender]) / len(sender_scores[each_sender])
     
     writer.writerow(row)
 
 
-if __name__ == "__main__":
+def main():
     run_sentiment_analysis()
+
+
+if __name__ == "__main__":
+    main()

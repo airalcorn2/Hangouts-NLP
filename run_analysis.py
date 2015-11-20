@@ -48,7 +48,8 @@ def create_corpora():
     for sender in sender_output:
         sender_output[sender].close()
 
-if __name__ == "__main__":
+
+def main():
     if not os.path.exists("Files"):
         os.makedirs("Files")
     remove_blank_lines()
@@ -56,3 +57,7 @@ if __name__ == "__main__":
     sentiment_analysis.run_sentiment_analysis()
     cluster_analysis.run_cluster_analysis()
     create_corpora()
+
+
+if __name__ == "__main__":
+    main()

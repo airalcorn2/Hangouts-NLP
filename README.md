@@ -7,7 +7,6 @@ This program performs a number of different natural language processing analyses
 
 <p>12GB RAM</p>
 <p>Linux</p>
-<p>Bash (I get a UnicodeDecodeError when using Zsh for some reason)</p>
 <p>Python (https://www.python.org/downloads/)</p>
 <p>R (http://cran.revolutionanalytics.com/)</p>
 <p>NLTK (http://www.nltk.org/install.html)</p>

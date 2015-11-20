@@ -6,13 +6,17 @@ from __future__ import print_function
 
 import nltk
 import string
+import sys
 import time
+import unicodedata
 
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem.porter import PorterStemmer
 
 stemmer = PorterStemmer()
+tbl = dict.fromkeys(i for i in xrange(sys.maxunicode)
+                    if unicodedata.category(unichr(i)).startswith('P'))
 
 
 def stem_tokens(tokens, stemmer):
@@ -37,17 +41,23 @@ def cluster_messages(k = 50):
     token_dict = {}
     
     messages_dict = {}
+    messages = []
     
-    for i, line in enumerate(conversations):
+    for (i, line) in enumerate(conversations):
+        line = line.strip().decode("utf-8")
         contents = line.strip().split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         message = " ".join(contents[2:])
         lowers = message.lower()
-        no_punctuation = lowers.translate(None, string.punctuation)
+        no_punctuation = lowers.translate(tbl)
         token_dict[i] = no_punctuation
         messages_dict[i] = line
+        messages.append(i)
     
     # This can take some time.
-    tfidf = TfidfVectorizer(tokenizer = tokenize, stop_words = 'english')
+    tfidf = TfidfVectorizer(tokenizer = tokenize, stop_words = "english")
     tfs = tfidf.fit_transform(token_dict.values())
     
     km = KMeans(n_clusters = k, init = "k-means++", max_iter = 5000, n_init = 100)
@@ -70,13 +80,13 @@ def cluster_messages(k = 50):
         if label not in clusters:
             clusters[label] = []
             cluster_counts[label] = 0
-        clusters[label].append(messages_dict[i])
+        clusters[label].append(messages_dict[messages[i]])
         cluster_counts[label] += 1
     
     for i in range(0, len(cluster_counts)):
         print("{0}: {1}".format(i, cluster_counts[i]))
     
-    output = open("Files/message_clusters_" + str(k), "w")
+    output = open("Files/message_clusters_{0}.txt".format(k), "w")
     
     for label in range(0, len(clusters)):
         separator = ["#" for i in range(0, 50)]
@@ -84,9 +94,10 @@ def cluster_messages(k = 50):
         print("".join(separator), file = output)
         for message in clusters[label]:
             separator = ["*" for i in range(0, 50)]
-            print(message, file = output)
+            print(message.encode("utf-8"), file = output)
     
     output.close()
+
 
 def cluster_conversations(k = 20):
     
@@ -103,7 +114,11 @@ def cluster_conversations(k = 20):
     
     for text in conversations:
         line = text
+        line = line.strip().decode("utf-8")
         contents = line.strip().split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         timestamp = contents[0]
         cur_message_time = int(time.mktime(time.strptime(timestamp, pattern)))
         if not old_message_time:
@@ -127,14 +142,14 @@ def cluster_conversations(k = 20):
             contents = line.split("[SEP]")
             message = " ".join(contents[2:])
             lowers = message.lower()
-            no_punctuation = lowers.translate(None, string.punctuation)
+            no_punctuation = lowers.translate(tbl)
             text += " " + no_punctuation
         
         text = text[1:]
         token_dict[i] = text
     
     # This can take some time.
-    tfidf = TfidfVectorizer(tokenizer = tokenize, stop_words = 'english')
+    tfidf = TfidfVectorizer(tokenizer = tokenize, stop_words = "english")
     tfs = tfidf.fit_transform(token_dict.values())
     
     km = KMeans(n_clusters = k, init = "k-means++", max_iter = 5000, n_init = 1)
@@ -163,7 +178,7 @@ def cluster_conversations(k = 20):
     for i in range(0, len(cluster_counts)):
         print("{0}: {1}".format(i, cluster_counts[i]))
     
-    output = open("Files/conversation_clusters_" + str(k), "w")
+    output = open("Files/conversation_clusters_{0}.txt".format(k), "w")
     
     for label in range(0, len(clusters)):
         separator = ["#" for i in range(0, 50)]
@@ -173,9 +188,10 @@ def cluster_conversations(k = 20):
             separator = ["*" for i in range(0, 50)]
             print("".join(separator), file = output)
             for message in conversation:
-                print(message, file = output)
+                print(message.encode("utf-8"), file = output)
     
     output.close()
+
 
 def cluster_contiguous_messages(k = 20):
     print("Clustering contiguous messages...")
@@ -193,7 +209,11 @@ def cluster_contiguous_messages(k = 20):
     prev_time = None
     
     for line in conversations:
+        line = line.strip().decode("utf-8")
         contents = line.strip().split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         message = " ".join(contents[2:])
         timestamp = contents[0]
         sender = contents[1]
@@ -201,7 +221,7 @@ def cluster_contiguous_messages(k = 20):
             current_sender = sender
             prev_time = int(time.mktime(time.strptime(timestamp, pattern)))
         lowers = message.lower()
-        no_punctuation = lowers.translate(None, string.punctuation)
+        no_punctuation = lowers.translate(tbl)
         current_time = int(time.mktime(time.strptime(timestamp, pattern)))
         if sender == current_sender and current_time - prev_time <= gap_time:
             current_message += no_punctuation + " "
@@ -251,7 +271,7 @@ def cluster_contiguous_messages(k = 20):
     for i in range(0, len(cluster_counts)):
         print("{0}: {1}".format(i, cluster_counts[i]))
     
-    output = open("Files/contiguous_message_clusters_" + str(k), "w")
+    output = open("Files/contiguous_message_clusters_{0}.txt".format(k), "w")
     
     for label in range(0, len(clusters)):
         separator = ["#" for i in range(0, 50)]
@@ -261,12 +281,16 @@ def cluster_contiguous_messages(k = 20):
             separator = ["*" for i in range(0, 50)]
             print("".join(separator), file = output)
             for message in conversation:
-                print(message, file = output)
+                print(message.encode("utf-8"), file = output)
     
     output.close()
 
 
-if __name__ == "__main__":
+def main():
     cluster_messages()
     cluster_conversations()
     cluster_contiguous_messages()
+
+
+if __name__ == "__main__":
+    main()

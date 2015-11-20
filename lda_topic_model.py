@@ -23,12 +23,16 @@ def lda_model(k = 25):
     text = []
     
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         timestamp = contents[0]
         message = " ".join(contents[2:])
         lowers = message.lower()
         no_punctuation = lowers.translate(None, string.punctuation)
-        no_digits = ''.join([word for word in no_punctuation if not word.isdigit()])
+        no_digits = "".join([word for word in no_punctuation if not word.isdigit()])
         no_stops = [word for word in no_digits.split() if word not in cached_stop_words]
         cur_message_time = int(time.mktime(time.strptime(timestamp, pattern)))
         if not old_message_time:
@@ -71,7 +75,7 @@ def lda_model(k = 25):
     
     X = np.zeros((len(documents), len(token_index)))
     
-    for i, document in enumerate(documents):
+    for (i, document) in enumerate(documents):
         for token in document:
             j = token_index[token]
             X[i][j] += 1
@@ -96,5 +100,9 @@ def lda_model(k = 25):
     return topic_scores
 
 
-if __name__ == "__main__":
+def main():
     topic_scores = lda_model()
+
+
+if __name__ == "__main__":
+    main()

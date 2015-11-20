@@ -32,7 +32,11 @@ def run_sender_analysis(get_sender_probs = False):
     sender_features = {}
     
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         sender = contents[1].replace(",", "")
         
         timestamp = contents[0]
@@ -96,7 +100,7 @@ def run_sender_classifier(sender_features, get_sender_probs = True, check_sender
         preds.append(prediction)
     
     cm = nltk.metrics.ConfusionMatrix(gold, preds)
-    print(cm.pp(sort_by_count = True, show_percents = True, truncate = 9))
+    print(cm.pretty_format(sort_by_count = True, show_percents = True, truncate = 9))
     print(classification_report(y_true = gold, y_pred = preds))
     print("train on {0} instances, test on {1} instances".format(len(train_features), len(test_features)))
     print("accuracy: {0}".format(nltk.classify.util.accuracy(classifier, test_features)))
@@ -120,13 +124,17 @@ def go_get_sender_probs(classifier, senders):
     
     for line in conversations:
         
-        contents = line.strip().split("[SEP]")
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         tokens = nltk.word_tokenize(message)
         feats = word_feats(tokens)
         probs = classifier.prob_classify(feats)
-        print(sender + ": " + message, file = output)
+        print(sender.encode("utf-8") + ": " + message.encode("utf-8"), file = output)
         results = ""
         for each_sender in senders:
             results += each_sender + ": " + str(probs.prob(each_sender)) + "| "
@@ -145,7 +153,12 @@ def go_check_sender_convergence(classifier, number_of_phases = 5):
     timestamps = []
     
     for line in conversations:
-        contents = line.strip().split("[SEP]")
+        
+        line = line.strip().decode("utf-8")
+        contents = line.split("[SEP]")
+        if len(contents) < 3:
+            continue
+        
         sender = contents[1].replace(",", "")
         message = " ".join(contents[2:])
         timestamp = contents[0]
@@ -194,7 +207,7 @@ def go_check_sender_convergence(classifier, number_of_phases = 5):
         pred = collections.defaultdict(set)
         preds = []
         
-        for i, (features, label) in enumerate(test_features):
+        for (i, (features, label)) in enumerate(test_features):
             gold.append(label)
             reference[label].add(i)
             prediction = classifier.classify(features)
@@ -202,12 +215,17 @@ def go_check_sender_convergence(classifier, number_of_phases = 5):
             preds.append(prediction)
         
         cm = nltk.metrics.ConfusionMatrix(gold, preds)
-        print(cm.pp(sort_by_count = True, show_percents = True, truncate = 9))
+        print(cm.pretty_format(sort_by_count = True, show_percents = True, truncate = 9))
         print(classification_report(y_true = gold, y_pred = preds))
-        print('train on {0} instances, test on {1} instances'.format(len(train_features), len(test_features)))
-        print('accuracy: {0}'.format(nltk.classify.util.accuracy(classifier, test_features)))
+        print("train on {0} instances, test on {1} instances".format(len(train_features), len(test_features)))
+        print("accuracy: {0}".format(nltk.classify.util.accuracy(classifier, test_features)))
         
         phase_count += 1
 
-if __name__ == "__main__":
+
+def main():
     run_sender_analysis()
+
+
+if __name__ == "__main__":
+    main()
