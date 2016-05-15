@@ -7,9 +7,11 @@ This program performs a number of different natural language processing analyses
 
 <p>12GB RAM</p>
 <p>Linux</p>
-<p>Python (https://www.python.org/downloads/)</p>
-<p>R (http://cran.revolutionanalytics.com/)</p>
-<p>NLTK (http://www.nltk.org/install.html)</p>
+[Python](https://www.python.org/downloads/)
+
+[R](http://cran.revolutionanalytics.com/)
+
+[NLTK](http://www.nltk.org/install.html)
 
 <b>Step 1.</b>
 
@@ -37,7 +39,7 @@ Run:
 
 <b>Step 6.</b>
 
-Download the sentiment training file found here -> https://drive.google.com/file/d/0B4iRo-F4K4f8VXFhd2pLWUJTdTg/view?usp=sharing and place it in the directory containing the code with the filename `sentiment_training.txt`. See http://help.sentiment140.com/for-students/ for details.
+Download the sentiment training file found [here](https://drive.google.com/file/d/0B4iRo-F4K4f8VXFhd2pLWUJTdTg/view?usp=sharing) and place it in the directory containing the code with the filename `sentiment_training.txt`. See http://help.sentiment140.com/for-students/ for details.
 
 <b>Step 7.</b>
 
