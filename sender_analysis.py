@@ -11,7 +11,7 @@ import random
 
 from nltk.classify import NaiveBayesClassifier
 from sklearn.metrics import classification_report
-
+from nltk.metrics.confusionmatrix import ConfusionMatrix
 
 def word_feats(words):
     return dict([(word, True) for word in words])
@@ -99,7 +99,7 @@ def run_sender_classifier(sender_features, get_sender_probs = True, check_sender
         pred[prediction].add(i)
         preds.append(prediction)
     
-    cm = nltk.metrics.ConfusionMatrix(gold, preds)
+    cm = ConfusionMatrix(gold, preds)
     print(cm.pretty_format(sort_by_count = True, show_percents = True, truncate = 9))
     print(classification_report(y_true = gold, y_pred = preds))
     print("train on {0} instances, test on {1} instances".format(len(train_features), len(test_features)))
@@ -214,7 +214,7 @@ def go_check_sender_convergence(classifier, number_of_phases = 5):
             pred[prediction].add(i)
             preds.append(prediction)
         
-        cm = nltk.metrics.ConfusionMatrix(gold, preds)
+        cm = ConfusionMatrix(gold, preds)
         print(cm.pretty_format(sort_by_count = True, show_percents = True, truncate = 9))
         print(classification_report(y_true = gold, y_pred = preds))
         print("train on {0} instances, test on {1} instances".format(len(train_features), len(test_features)))
