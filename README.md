@@ -37,7 +37,7 @@ Run:
 
 <b>Step 6.</b>
 
-Download the sentiment training file found here -> https://drive.google.com/file/d/0B4iRo-F4K4f8VXFhd2pLWUJTdTg/view?usp=sharing and place it in the directory containing the code. See http://help.sentiment140.com/for-students/ for details.
+Download the sentiment training file found here -> https://drive.google.com/file/d/0B4iRo-F4K4f8VXFhd2pLWUJTdTg/view?usp=sharing and place it in the directory containing the code with the filename `sentiment_training.txt`. See http://help.sentiment140.com/for-students/ for details.
 
 <b>Step 7.</b>
 
