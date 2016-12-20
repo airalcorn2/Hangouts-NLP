@@ -3,7 +3,7 @@ Hangouts-NLP
 
 Hangouts NLP performs a number of different natural language processing analyses on Google Hangouts instant messaging data.
 
-This was my final project for CS 6320: Natural Language Processing. I took this course in the fall semester of 2014 while I was a master's student at The University of Texas at Dallas. The course was taught by [Yang Liu](http://www.hlt.utdallas.edu/~yangl/).
+This was my final project for CS 6320: Natural Language Processing (taught by [Yang Liu](http://www.hlt.utdallas.edu/~yangl/)). I took this course in the fall semester of 2014 while I was a master's student at The University of Texas at Dallas.
 
 <b>Requirements:</b>
 
