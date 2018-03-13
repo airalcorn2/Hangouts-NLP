@@ -9,6 +9,7 @@ This was my final project for CS 6320: Natural Language Processing (taught by [Y
 
 <p>12GB RAM</p>
 <p>Linux</p>
+
 [Python](https://www.python.org/downloads/)
 
 [R](http://cran.revolutionanalytics.com/)
